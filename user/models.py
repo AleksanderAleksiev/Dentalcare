@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+# from appointments.models import Appointment
+# from feedback.models import Feedback
+# from django.db.models.manager import Manager
 
 
 class UserAccountManager(BaseUserManager):
@@ -45,8 +48,12 @@ class UserAccountManager(BaseUserManager):
 
 
 class UserAccount(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(max_length=255, unique=True)
-    name = models.CharField(max_length=255)
+
+    # appointments: Manager[Appointment]
+    # feedback: Manager[Feedback]
+
+    email = models.EmailField(max_length=40, unique=True)
+    name = models.CharField(max_length=30)
     phone = models.CharField(max_length=20, null=True, blank=True)
     address = models.CharField(max_length=50, null=True, blank=True)
     years = models.IntegerField(default=0)
@@ -61,5 +68,8 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
 
-    def __str__(self):
-        return self.email
+    def __str__(self) -> str:
+        if self.is_dentist:
+            return f'{self.name}, working as a dentist for {self.years}'
+        
+        return f'{self.name}, {self.years}, lives in {self.address}'

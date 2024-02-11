@@ -13,3 +13,7 @@ class Appointment(models.Model):
     is_all_day = models.BooleanField(default=False, null=True, blank=True)
     recurrence_rule = models.CharField(max_length=50, null=True, blank=True)
     excluded_dates = models.CharField(max_length=400, null=True, blank=True)
+
+
+    def __str__(self) -> str:
+        return f'{self.title}, occurs from {self.start_date} until {self.end_date}'

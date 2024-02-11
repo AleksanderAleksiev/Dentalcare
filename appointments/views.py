@@ -15,11 +15,16 @@ def get_all_appointments(request):
 
         serializer = AppointmentSerializer(data, context={'request': request}, many=True)
 
-        return Response(serializer.data)
-
-    except:
         return Response(
-            {'error': 'Could not get appointments'},
+            {'appointments': serializer.data},
+            status=status.HTTP_200_OK
+        )
+
+    except Exception as e:
+        print(e)
+
+        return Response(
+            {'error': 'Something went wrong when retrieving appointments'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
@@ -115,7 +120,8 @@ def get_user_appointments_by_date_range(request):
         )
 
     except Exception as e:
-        print(e)        
+        print(e)
+
         return Response(
             {'error': 'Something went wrong when retrieving user appointments'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -181,7 +187,9 @@ def create_appointment(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    except:
+    except Exception as e:
+        print(e)
+
         return Response(
             {'error': 'Something went wrong when creating an appointment'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
 from utils.utils import check_for_insufficient_props
+from rest_framework.decorators import api_view
 
 
 class RegisterView(APIView):
@@ -125,8 +126,62 @@ class RetrieveUserView(APIView):
                 status=status.HTTP_200_OK
             )
         
-        except:
+        except Exception as e:
+            print(e)
+
             return Response(
-                {'error', 'Something went wrong when updating user account'},
+                {'error': 'Something went wrong when updating user account'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        
+
+
+@api_view(['GET'])
+def get_all_dentists(request):
+
+    try:
+        data = User.objects.filter(is_dentist=True)
+
+        serializer = UserSerializer(data, context={'request': request}, many=True)
+
+        return Response(
+            {'dentists': serializer.data},
+            status=status.HTTP_200_OK
+        )
+    
+    except Exception as e:
+        print(e)
+
+        return Response(
+            {'error': 'Something went wrong when retrieving dentist users'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+    
+
+
+@api_view(['GET'])
+def get_user_detail(request, id):
+
+    try:
+        user = User.objects.get(id=id)
+
+        serializer = UserSerializer(user, context={'request': request})
+
+        return Response(
+            {'user': serializer.data},
+            status=status.HTTP_200_OK,
+        )
+
+    except User.DoesNotExist:
+        return Response(
+            {'error': 'User does not exist'},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+    
+    except Exception as e:
+        print(e)
+
+        return Response(
+            {'error': 'Something went wrong when retrieving user details'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        ) 

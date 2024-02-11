@@ -14,9 +14,14 @@ def get_feedback_all(request):
 
         serializer = FeedbackSerializer(data, context={'request': request}, many=True)
 
-        return Response(serializer.data)
+        return Response(
+            {'feedback': serializer.data},
+            status=status.HTTP_200_OK
+        )
 
-    except:
+    except Exception as e:
+        print(e)
+
         return Response(
             {'error': 'Could not get all types of feedback'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -39,7 +44,8 @@ def get_user_feedback(request):
         )
 
     except Exception as e:
-        print(e)        
+        print(e)
+
         return Response(
             {'error': 'Something went wrong when retrieving user feedback'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -60,7 +66,8 @@ def get_dentist_feedback(request, id):
         )
 
     except Exception as e:
-        print(e)        
+        print(e)
+
         return Response(
             {'error': 'Something went wrong when retrieving dentist feedback'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -91,7 +98,9 @@ def create_feedback(request):
                 status=status.HTTP_201_CREATED,
             )
 
-    except:
+    except Exception as e:
+        print(e)
+
         return Response(
             {'error': 'Something went wrong when creating feedback'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
